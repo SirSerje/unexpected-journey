@@ -1,0 +1,5 @@
+.idea
+node_modules/
+# remove this after sync
+yarn.lock
+package-json.lock

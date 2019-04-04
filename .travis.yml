@@ -1,0 +1,13 @@
+#use it after success config
+language: node_js
+#notifications:
+#  email:
+#    recipients:
+#    - sir.serje@gmail.com
+#    on_success: always # default: change
+#before_install:
+#- rm -rf package-lock.json
+#- "npm install -g yarn"
+#script:
+#- yarn run lint
+#- yarn run test

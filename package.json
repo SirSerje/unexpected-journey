@@ -1,0 +1,15 @@
+{
+  "license":"MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=smth nodemon ./src/index.js",
+    "lint": " ./node_modules/.bin/eslint ./src/*/**.js",
+    "lint-fix": "./node_modules/.bin/eslint ./src/*/**.js --fix",
+    "test": "jest"
+
+  },
+  "dependencies": {
+    "eslint": "^5.16.0",
+    "jest": "^24.7.0",
+    "nodemon": "^1.18.10"
+  }
+}

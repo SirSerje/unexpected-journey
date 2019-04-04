@@ -1,0 +1,1 @@
+add code of conduct: https://help.github.com/en/articles/setting-guidelines-for-repository-contributors#adding-a-contributing-file
