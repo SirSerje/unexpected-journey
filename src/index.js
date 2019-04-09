@@ -13,16 +13,43 @@ MongoClient.connect('mongodb+srv://q:XXXXXX@cluster0-cpecu.gcp.mongodb.net/test?
 */
 
 //Example of graph ql
-const express = require('express');
-const graphqlHTTP = require('express-graphql');
-const schema = require('./schema.js');
+const express = require('express')
+const graphqlHTTP = require('express-graphql')
+const schema = require('./schema.js')
 
-let port = 3000;
-const app = express();
+
+
+
+const port = process.env.PORT
+const app = express()
+
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
+
 app.use('/', graphqlHTTP({
   schema: schema,
-  graphiql: true
-}));
+  graphiql: process.env.NAME === 'dev',
+  formatError: error => ({
+    message: error.message,
+    locations: error.locations,
+    stack: error.stack ? error.stack.split('\n') : [],
+    path: error.path
+  })
+}))
 
-app.listen(port);
-console.log('GraphQL API server running at localhost:'+ port);
+app.use('/posts', graphqlHTTP({
+  schema: schema,
+
+  formatError: error => ({
+    message: error.message,
+    locations: error.locations,
+    stack: error.stack ? error.stack.split('\n') : [],
+    path: error.path
+  })
+}))
+
+app.listen(port)
+console.log('GraphQL API server running at localhost:' + port)
