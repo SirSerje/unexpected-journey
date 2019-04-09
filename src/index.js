@@ -1,27 +1,47 @@
-//import sum from './modules/sum'
+//к сожалению, пока все лежит в одном файле, но я разнесу это
+const express = require('express')
+const bodyParser = require('body-parser')
+const app = express()
+const router = express.Router()
+const PORT = 3892
 
-//console.log(`Hello, world ${sum(1, 2)} ${process.env.NODE_ENV}` )
+const mongoose = require('mongoose')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
 
-/*
-Connect to mongo server
-MongoClient.connect('mongodb+srv://q:XXXXXX@cluster0-cpecu.gcp.mongodb.net/test?retryWrites=true',
-  function (err, db) {
-    if(!err) {
-      console.log('We are connected')
-    }
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+
+mongoose.connect(
+  'mongodb+srv://q:q@cluster0-cpecu.gcp.mongodb.net/unexpected-journey',
+  {useNewUrlParser: true}
+)
+const db = mongoose.connection
+
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', () => console.log('successfully connected'))
+
+//use sessions for tracking logins
+app.use(session({
+  secret: 'THIS_SECRET_SHOULD_BE_SAVED',
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
   })
-*/
+}))
+
+app.use('/api', require('./routes/auth'))
+
+const index = app.listen(PORT, function () {
+  console.log('app running on port.', PORT)
+})
+//-------- end of mongo manipulations
 
 //Example of graph ql
-const express = require('express')
 const graphqlHTTP = require('express-graphql')
 const schema = require('./schema.js')
-
-
-
-
 const port = process.env.PORT
-const app = express()
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
