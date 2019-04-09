@@ -30,7 +30,7 @@ auth.post('/auth', function (req, res, next) {
         return next(error)
       } else {
         req.session.userId = user._id
-        return res.send({success: 'registered'})
+        return res.send({success: 'registered', session: req.session.userId})
         // return res.redirect('/profile');
       }
     })
@@ -43,7 +43,7 @@ auth.post('/auth', function (req, res, next) {
         return next(err)
       } else {
         req.session.userId = user._id
-        return res.send({auth: 'login'})
+        return res.send({auth: 'login', session: req.session.userId})
         // return res.redirect('/profile');
       }
     })

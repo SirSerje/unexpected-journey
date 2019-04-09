@@ -21,7 +21,7 @@ module.exports = merge(webpackConfig, {
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
     },
     proxy: {
-      '*':'http://localhost:3890'
+      '/':'http://localhost:3890'
     }
   }
 
