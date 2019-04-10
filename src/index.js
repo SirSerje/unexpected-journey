@@ -25,8 +25,8 @@ db.once('open', () => console.log('successfully connected'.cyan))
 //use sessions for tracking logins
 app.use(session({
   secret: 'THIS_SECRET_SHOULD_BE_SAVED',
-  resave: true,
-  cookie: { secure: true, maxAge: 3600 },
+  resave: false,
+  cookie: { maxAge: 14400 },
   expires:true,
   saveUninitialized: false,
   store: new MongoStore({
