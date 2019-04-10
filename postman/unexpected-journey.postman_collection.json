@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "20c1cf0d-fa94-47a3-8d6d-e1a9df8e0768",
+		"name": "unexpected-journey",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "USER create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "testName",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "aaaaa",
+							"type": "text"
+						},
+						{
+							"key": "passwordConf",
+							"value": "aaaaa",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "sss@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3890/api/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3890",
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "logemail",
+							"value": "sss@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "logpassword",
+							"value": "aaaaa",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3890/api/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3890",
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER logout",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "login",
+							"value": "testName",
+							"description": "name",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "!pwd123",
+							"description": "userpass. Should be salted, hash, etc ...",
+							"type": "text"
+						},
+						{
+							"key": "secret",
+							"value": "84984C1885C93064352F6C2A59C92656",
+							"description": "now this will be static",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3890/api/auth/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3890",
+					"path": [
+						"api",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
