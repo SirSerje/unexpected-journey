@@ -1,85 +1,54 @@
-//к сожалению, пока все лежит в одном файле, но я разнесу это
-import { GraphQLObjectType } from 'graphql'
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const port = process.env.PORT
-require('colors')
-const mongoose = require('mongoose')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const { ApolloServer, gql } = require('apollo-server')
 
-//enable cors stuff
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3891')
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  next()
-})
+// This is a (sample) collection of books we'll be able to query
+// the GraphQL server for.  A more complete example might fetch
+// from an existing data source like a REST API or database.
+const books = [
+  {
+    title: 'Harry Potter and the Chamber of Secrets',
+    author: 'J.K. Rowling'
+  },
+  {
+    title: 'Jurassic Park',
+    author: 'Michael Crichton'
+  }
+]
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+// Type definitions define the "shape" of your data and specify
+// which ways the data can be fetched from the GraphQL server.
+const typeDefs = /*gql*/`
+  # Comments in GraphQL are defined with the hash (#) symbol.
 
-mongoose.connect(
-  'mongodb+srv://q:q@cluster0-cpecu.gcp.mongodb.net/unexpected-journey',
-  {useNewUrlParser: true}
-)
-const db = mongoose.connection
-
-db.on('error', console.error.bind(console, 'connection error:'.red))
-db.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'.cyan))
-
-//use sessions for tracking logins
-app.use(session({
-  secret: 'THIS_SECRET_SHOULD_BE_SAVED',
-  resave: false,
-  cookie: { maxAge: 14400 },
-  expires:true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: db
-  })
-}))
-
-app.use('/api', require('./routes/auth'))
-
-//-------- end of mongo manipulations
-
-//Example of graph ql
-const graphqlHTTP = require('express-graphql')
-const schema = require('./schema.js')
-
-app.use('/graph', graphqlHTTP((req, res, next) => {
-  //TODO: this solution is not right, we need to fix it
-  console.log(req.session)
-  if(!req.session.userId){
-    return { schema:new GraphQLObjectType({
-      name:'access denied. try to login and make request'
-    }) }
+  # This "Book" type can be used in other type declarations.
+  type Book {
+    title: String
+    author: String
   }
 
-  return {
-    schema: schema,
-    graphiql: process.env.NAME === 'dev',
-    formatError: error => ({
-      message: error.message,
-      locations: String(error.locations).red,
-      stack: error.stack ? error.stack.split('\n') : [],
-      path: error.path
-    })
-  }}))
+  # The "Query" type is the root of all GraphQL queries.
+  # (A "Mutation" type will be covered later on.)
+  type Query {
+    books: [Book]
+    some: [Book]
+  }
+`
 
-app.use('/posts', graphqlHTTP({
-  schema: schema,
+// Resolvers define the technique for fetching the types in the
+// schema.  We'll retrieve books from the "books" array above.
+const resolvers = {
+  Query: {
+    books: () => books,
+    some: () => 'hi'
+  }
+}
 
-  formatError: error => ({
-    message: error.message,
-    locations: error.locations,
-    stack: error.stack ? error.stack.split('\n') : [],
-    path: error.path
-  })
-}))
+// In the most basic sense, the ApolloServer can be started
+// by passing type definitions (typeDefs) and the resolvers
+// responsible for fetching the data for those types.
+const server = new ApolloServer({ typeDefs, resolvers })
 
-app.listen(port, function () {
-  console.log('app running on port.', port)
+// This `listen` method launches a web-server.  Existing apps
+// can utilize middleware options, which we'll discuss later.
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url}`)
 })
