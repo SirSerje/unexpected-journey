@@ -9,6 +9,7 @@ let logpass = createInput('aaaaa')
 let getFromForm = createButton('try to login')
 let logout = createButton('logout')
 
+axios.defaults.withCredentials = true
 
 requestButton.addEventListener('click', () =>
   axios.get('http://localhost:3890/graph/?query={authors{id}}').
