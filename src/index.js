@@ -12,8 +12,9 @@ const { ApolloServer, gql } = require('apollo-server-express')
 const { Schema } = mongoose
 
 const userSchema = new Schema({
-  userName: String,
-  email: String
+  username: String,
+  email: String,
+  password: String
 })
 
 const User = mongoose.model('user', userSchema)
@@ -41,20 +42,23 @@ db.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'
 const typeDefs = gql`
     type User {
         id: ID!
-        userName: String
-        email: Striyng
+        password: ID
+        username: String
+        email: String
     }
     type Query {
         getUsers: [User]
     }
     type Mutation {
-        addUser(userName: String!, email: String!): User
+        addUser(username: String!, email: String!, password: String!): User
     }
 `
 
 const resolvers = {
   Query: {
-    getUsers: async () => await User.find({}).exec()
+    getUsers: async () => {
+      return await User.find({}).exec()
+    }
   },
   Mutation: {
     addUser: async (_, args) => {
