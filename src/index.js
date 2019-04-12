@@ -1,5 +1,5 @@
-//к сожалению, пока все лежит в одном файле, но я разнесу это
-import { GraphQLObjectType } from 'graphql'
+import typeDefs from './typeDefs/user'
+import resolvers from './resolvers/user'
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -8,16 +8,10 @@ require('colors')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
-const { ApolloServer, gql } = require('apollo-server-express')
-const { Schema } = mongoose
+const { ApolloServer } = require('apollo-server-express')
 
-const userSchema = new Schema({
-  username: String,
-  email: String,
-  password: String
-})
-
-const User = mongoose.model('user', userSchema)
+//TODO: add FE authorization
+//TODO: separate middleware
 
 //enable cors stuff
 app.use(function (req, res, next) {
@@ -39,38 +33,6 @@ const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'.red))
 db.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'.cyan))
 
-const typeDefs = gql`
-    type User {
-        id: ID!
-        password: ID
-        username: String
-        email: String
-    }
-    type Query {
-        getUsers: [User]
-    }
-    type Mutation {
-        addUser(username: String!, email: String!, password: String!): User
-    }
-`
-
-const resolvers = {
-  Query: {
-    getUsers: async () => {
-      return await User.find({}).exec()
-    }
-  },
-  Mutation: {
-    addUser: async (_, args) => {
-      try {
-        let response = await User.create(args)
-        return response
-      } catch(e) {
-        return e.message
-      }
-    }
-  }
-}
 
 const server = new ApolloServer({ typeDefs, resolvers })
 server.applyMiddleware({ app })
