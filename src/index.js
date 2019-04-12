@@ -8,6 +8,16 @@ require('colors')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const { ApolloServer, gql } = require('apollo-server-express')
+const { Schema } = mongoose
+
+const userSchema = new Schema({
+  username: String,
+  email: String,
+  password: String
+})
+
+const User = mongoose.model('user', userSchema)
 
 //enable cors stuff
 app.use(function (req, res, next) {
@@ -29,57 +39,42 @@ const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'.red))
 db.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'.cyan))
 
-//use sessions for tracking logins
-app.use(session({
-  secret: 'THIS_SECRET_SHOULD_BE_SAVED',
-  resave: false,
-  cookie: { maxAge: 14400 },
-  expires:true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: db
-  })
-}))
+const typeDefs = gql`
+    type User {
+        id: ID!
+        password: ID
+        username: String
+        email: String
+    }
+    type Query {
+        getUsers: [User]
+    }
+    type Mutation {
+        addUser(username: String!, email: String!, password: String!): User
+    }
+`
 
-app.use('/api', require('./routes/auth'))
-
-//-------- end of mongo manipulations
-
-//Example of graph ql
-const graphqlHTTP = require('express-graphql')
-const schema = require('./schema.js')
-
-app.use('/graph', graphqlHTTP((req, res, next) => {
-  //TODO: this solution is not right, we need to fix it
-  console.log(req.session)
-  if(!req.session.userId){
-    return { schema:new GraphQLObjectType({
-      name:'access denied. try to login and make request'
-    }) }
+const resolvers = {
+  Query: {
+    getUsers: async () => {
+      return await User.find({}).exec()
+    }
+  },
+  Mutation: {
+    addUser: async (_, args) => {
+      try {
+        let response = await User.create(args)
+        return response
+      } catch(e) {
+        return e.message
+      }
+    }
   }
+}
 
-  return {
-    schema: schema,
-    graphiql: process.env.NAME === 'dev',
-    formatError: error => ({
-      message: error.message,
-      locations: String(error.locations).red,
-      stack: error.stack ? error.stack.split('\n') : [],
-      path: error.path
-    })
-  }}))
+const server = new ApolloServer({ typeDefs, resolvers })
+server.applyMiddleware({ app })
 
-app.use('/posts', graphqlHTTP({
-  schema: schema,
-
-  formatError: error => ({
-    message: error.message,
-    locations: error.locations,
-    stack: error.stack ? error.stack.split('\n') : [],
-    path: error.path
-  })
-}))
-
-app.listen(port, function () {
-  console.log('app running on port.', port)
-})
+app.listen({ port: 4000 }, () =>
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+)
