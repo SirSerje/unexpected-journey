@@ -1,42 +1,36 @@
-import typeDefs from './typeDefs/user'
-import resolvers from './resolvers/user'
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const port = process.env.PORT
 require('colors')
-const mongoose = require('mongoose')
-const session = require('express-session')
+import {setHeaders} from './middlewares'
+import express from 'express'
+import bodyParser from 'body-parser'
+import mongoose from 'mongoose'
+import session from 'express-session'
+import {ApolloServer} from 'apollo-server-express'
+
+import typeDefs from './graphql/typeDefs/user'
+import resolvers from './graphql/resolvers/user'
+
+
 const MongoStore = require('connect-mongo')(session)
-const { ApolloServer } = require('apollo-server-express')
+const app = express()
+const port = process.env.PORT
 
 //TODO: add FE authorization
 //TODO: separate middleware
 
 //enable cors stuff
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3891')
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  next()
-})
-
+app.use(setHeaders)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-mongoose.connect(
-  'mongodb+srv://q:q@cluster0-cpecu.gcp.mongodb.net/unexpected-journey',
-  {useNewUrlParser: true}
-)
-const db = mongoose.connection
-
-db.on('error', console.error.bind(console, 'connection error:'.red))
-db.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'.cyan))
+mongoose.connect('mongodb+srv://q:q@cluster0-cpecu.gcp.mongodb.net/unexpected-journey', {useNewUrlParser: true})
+const database = mongoose.connection
+database.on('error', console.error.bind(console, 'connection error:'.red))
+database.once('open', () => console.log('Successfully connected to MongoDB Atlas 🙌'.cyan))
 
 
 const server = new ApolloServer({ typeDefs, resolvers })
 server.applyMiddleware({ app })
 
-app.listen({ port: 4000 }, () =>
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+app.listen({ port: port}, () =>
+  console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
 )

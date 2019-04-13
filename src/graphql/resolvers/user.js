@@ -1,4 +1,4 @@
-import User from '../schemes/user'
+import User from '../../schemes/user'
 
 const resolvers = {
   Query: {

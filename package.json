@@ -3,8 +3,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "env-cmd ./envs/dev.env nodemon --no-colors --exec babel-node src/index.js",
-    "lint": " ./node_modules/.bin/eslint ./*/**.js",
-    "lint-fix": "./node_modules/.bin/eslint ./*/**.js --fix",
+    "lint": " ./node_modules/.bin/eslint './*/**.js'",
+    "lint-fix": "./node_modules/.bin/eslint './*/**.js' --fix",
     "test": "jest",
     "coverage": "jest --coverage",
     "dev": "env-cmd ./envs/dev.env webpack-dev-server --progress --mode development --config webpack.config.dev.js"
