@@ -1,6 +1,7 @@
-const merge = require('webpack-merge')
-const webpackConfig = require('./webpack.config')
-
+const merge = require('webpack-merge');
+const webpackConfig = require('./webpack.config');
+const port = process.env.FRONT;
+const backPort = process.env.BACK;
 module.exports = merge(webpackConfig, {
 
   devtool: 'eval',
@@ -10,19 +11,17 @@ module.exports = merge(webpackConfig, {
     publicPath: '/',
     filename: '[name].js'
   },
-
   devServer: {
     historyApiFallback: true,
     host: 'localhost',
-    port: '3891',
+    port: port,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
     },
     proxy: {
-      '/':'http://localhost:3890'
+      '/':`http://localhost:${backPort}`
     }
   }
-
-})
+});

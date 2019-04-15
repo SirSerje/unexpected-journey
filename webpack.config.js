@@ -1,16 +1,15 @@
-const path = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 // Is the current build a development build
-const IS_DEV = (process.env.ENV === 'dev')
-
-const dirNode = 'node_modules'
-const dirApp = path.join(__dirname, 'src')
-const dirAssets = path.join(__dirname, 'assets')
-const pathToHTML = path.join(__dirname, 'src/client/static/index.html')
-const appHtmlTitle = 'Webpack Boilerplate'
-
+const IS_DEV = (process.env.ENV === 'dev');
+const serverPort = process.env.BACK;
+const dirNode = 'node_modules';
+const dirApp = path.join(__dirname, 'src');
+const dirAssets = path.join(__dirname, 'assets');
+const pathToHTML = path.join(__dirname, 'src/client/static/index.html');
+const appHtmlTitle = 'Webpack Boilerplate';
 /**
  * Webpack Configuration
  */
@@ -31,8 +30,9 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.DefinePlugin({
-      IS_DEV: IS_DEV
+    new Dotenv({
+      path: 'envs/dev.env',
+      safe: false
     }),
 
     new HtmlWebpackPlugin({
