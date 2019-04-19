@@ -1,11 +1,10 @@
-import User from '../../schemes/user';
+//TODO: need to stitch > 2 typeDefs
+
+/*
 import Journey from '../../schemes/journey';
 
 const resolvers = {
   Query: {
-    getUsers: async () => {
-      return await User.find({}).exec();
-    },
     getJourney: async () => {
       return await Journey.find({}).exec();
     }
@@ -18,16 +17,9 @@ const resolvers = {
       } catch(e) {
         return e.message;
       }
-    },
-    addUser: async (_, args) => {
-      try {
-        let response = await User.create(args);
-        return response;
-      } catch(e) {
-        return e.message;
-      }
     }
   }
 };
 
 export default resolvers;
+*/

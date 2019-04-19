@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+//currently, this model need only for session creation, journey need only scheme
 
 const UserSchema = new mongoose.Schema({
   email: {
