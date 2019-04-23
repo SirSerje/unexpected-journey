@@ -16,6 +16,7 @@ const typeDefs = gql`
     
     type Mutation {
         addUser(username: String!, email: String!, password: String!): User
+        removeUser(id: ID!): User
     }
 `;
 
@@ -26,6 +27,15 @@ const resolvers = {
     }
   },
   Mutation: {
+    removeUser: async (_, args) => {
+      try {
+        let response = await User.find( { _id: args.id } );
+        //TODO: really delete element
+        return response[0];
+      } catch(e) {
+        return e.message;
+      }
+    },
     addUser: async (_, args) => {
       try {
         let response = await User.create(args);

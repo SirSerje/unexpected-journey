@@ -16,6 +16,7 @@ const typeDefs = gql`
     
     type Mutation {
         addJourney(userId: String!, character: String!, journey: String!): Journey
+        removeJourney(id: ID!): Journey
     }
 `;
 
@@ -26,6 +27,15 @@ const resolvers = {
     }
   },
   Mutation: {
+    removeJourney: async (_, args) => {
+      try {
+        let response = await Journey.find( { _id: args.id } );
+        //TODO: really delete element
+        return response[0];
+      } catch(e) {
+        return e.message;
+      }
+    },
     addJourney: async (_, args) => {
       try {
         let response = await Journey.create(args);
