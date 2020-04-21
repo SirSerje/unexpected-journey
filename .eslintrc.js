@@ -12,11 +12,6 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
   },
-  ecmaFeatures: {
-    modules: true,
-    spread : true,
-    restParams : true,
-  },
   globals: {
     '__dirname': 'readonly',
     process: 'readonly',
@@ -32,7 +27,7 @@ module.exports = {
     'eol-last': ['error', 'always'],
     'newline-before-return': 'error',
     'no-multiple-empty-lines': ['error', { 'max': 2, 'maxBOF': 1 }],
-
     "node/no-unsupported-features/es-syntax": 0,
+    "node/no-unpublished-import": 0,
   },
 };

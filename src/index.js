@@ -5,15 +5,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
+import winston from 'winston';
+import User from './models/user';
 import { ProfileController } from './controllers/profile';
 import { LogoutController } from './controllers/logout';
 import { SignupController } from './controllers/signup';
 import { LoginController } from './controllers/login';
 import { isAdmin, isUser } from './middlewares/roles';
-import User from './models/user';
-import winston from 'winston'; // TODO : use it in project
-
-// TODO : add validation throught express-validate
+import { userSignupValidator, userSignInValidator } from './middlewares/validators';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 const envConfig = dotenv.config();
 if (envConfig.error) {
@@ -23,6 +24,7 @@ if (envConfig.error) {
 
 const app = express();
 const MongoStore = connectMongo(session);
+const swaggerDocument = YAML.load('./swagger.yaml');
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -44,6 +46,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 mongoose.connect(process.env.MONGO_PATH, {
   useNewUrlParser: true,
@@ -81,11 +85,10 @@ const roleLoggerMiddleWare = async (req, res, next) => {
 //static content
 app.use(express.static('src/view/public'));
 
-//static for trucks
+app.post('/login', [roleLoggerMiddleWare, userSignInValidator], LoginController);
+app.post('/signup', [roleLoggerMiddleWare, userSignupValidator], SignupController);
+app.get('/logout', [roleLoggerMiddleWare], LogoutController);
+app.get('/profile', [roleLoggerMiddleWare], ProfileController);
 
-app.post('/login', roleLoggerMiddleWare, LoginController);
-app.post('/signup', roleLoggerMiddleWare, SignupController);
-app.get('/logout', roleLoggerMiddleWare, LogoutController);
-app.get('/profile', roleLoggerMiddleWare, ProfileController);
 
 app.listen(process.env.NODE_PORT, () => console.log(`tracker running on port: ${process.env.NODE_PORT}`));
