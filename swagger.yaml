@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Unexpected Journey
+  description: to be described
+  version: 0.0.1
+servers:
+  - url: http://localhost:4000
+    description: Server Description
+paths:
+  /login:
+    post:
+      summary: verify by JWT token, can be current session authorized
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  default: admin@gmail.com
+                pass:
+                  type: string
+                  default: admin
+              required:
+                - username
+                - pass
+  /signup:
+    post:
+      summary: add's new user to database (mongo)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  default: admin
+                email:
+                  type: string
+                  default: admin@gmail.com
+                pass:
+                  type: string
+                  default: admin
+                repass:
+                  type: string
+                  default: admin
+                role:
+                  type: string
+                  default: admin
+              required:
+                - username
+                - email
+                - pass
+                - repass
+                - role
+  /logout:
+    get:
+      summary: close user session
+  /profile:
+    get:
+      summary: static page with user profile
