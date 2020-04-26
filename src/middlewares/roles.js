@@ -22,25 +22,25 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-
+// TODO: verify, does it work properly
 const isUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.session.userId);
     if ('customer' === user.role || 'admin' === user.role) {
       return next();
-    } else if(user === null) {
+    } else if(!user.role) {
       console.log(`unauthorized`);
       
-      return res.redirect('/');
+      return res.status(401).send('unauthorized');
     } else {
-      console.log(`wrong role for this route, CUSTOMER required, but ${user} present`);
+      console.log(`wrong role for this route, CUSTOMER or ADMIN required, but ${user.role} present`);
       
       return res.redirect('/profile');
     }
   } catch (err) {
-    console.log('error');
+    console.log('error', err);
     
-    return res.status(401);
+    return res.status(401).send({error: err.message});
   }
 };
 

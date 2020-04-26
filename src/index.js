@@ -8,6 +8,7 @@ import connectMongo from 'connect-mongo';
 import winston from 'winston';
 import User from './models/user';
 import { ProfileController } from './controllers/profile';
+import { CharacterController } from './controllers/character';
 import { LogoutController } from './controllers/logout';
 import { SignupController } from './controllers/signup';
 import { LoginController } from './controllers/login';
@@ -53,6 +54,7 @@ mongoose.connect(process.env.MONGO_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  useFindAndModify: false
 }).then((result) => {
   console.log(`MongoDB connection granted`);
 }).catch(error => console.log(`There is troubles with connecting to MongoDB ${error}`));
@@ -89,6 +91,6 @@ app.post('/login', [roleLoggerMiddleWare, userSignInValidator], LoginController)
 app.post('/signup', [roleLoggerMiddleWare, userSignupValidator], SignupController);
 app.get('/logout', [roleLoggerMiddleWare], LogoutController);
 app.get('/profile', [roleLoggerMiddleWare], ProfileController);
-
+app.use('/character', [roleLoggerMiddleWare ], CharacterController);
 
 app.listen(process.env.NODE_PORT, () => console.log(`tracker running on port: ${process.env.NODE_PORT}`));

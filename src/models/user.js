@@ -1,18 +1,21 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+const Schema = mongoose.Schema;
+
 
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
     required: true,
-    trim: true
   },
   username: {
     type: String,
     unique: true,
     required: true,
-    trim: true
+  },
+  comments: {
+    type: String
   },
   password: {
     type: String,
@@ -21,19 +24,25 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-  }
+  },
+  characters: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Character',
+    required: false,
+    unique: false,
+  }],
 });
 
 //authenticate input against database
 UserSchema.statics.authenticate = function (email, password, callback) {
-  User.findOne({email: email})
+  User.findOne({ email: email })
     .exec(function (err, user) {
       if (err) {
         return callback(err);
       } else if (!user) {
         const err = new Error('User not found.');
         err.status = 401;
-        
+
         return callback(err);
       }
       bcrypt.compare(password, user.password, function (err, result) {
