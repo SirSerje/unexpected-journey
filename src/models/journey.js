@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const CharacterSchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: false,
+    unique: true,
     required: true,
   },
-  stats: {
+  description: {
     type: String,
     required: true,
   },

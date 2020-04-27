@@ -1,6 +1,7 @@
 import characterService from '../../services/character';
 import { isAdmin, isUser } from '../../middlewares/roles';
 
+
 const express = require('express');
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.post('/', [isUser], async (req, res, next) => {
 });
 
 //get Chars for user
-router.get('/',[isUser], async (req, res, next) => {
+router.get('/', [isUser], async (req, res, next) => {
   const { userId } = req.session;
   try {
     const characters = await characterService.getUserCharacters(userId);
@@ -39,18 +40,25 @@ router.get('/',[isUser], async (req, res, next) => {
 
 // update char
 router.put('/', async (req, res, next) => {
+  const { _id, name } = req.body;
+  try {
+    const updatedCharacter =  await characterService.updateCharacter(_id, { name });
 
+    return res.status(200).send(updatedCharacter);
+  } catch (err) {
+    return res.status(500).send({ error: err.message });
+  }
 });
 
 // only ADMIN route
 // physically delete character & remove from user
-router.delete('/', [isAdmin],async (req, res, next) => {
+router.delete('/', [isAdmin], async (req, res, next) => {
   const { userId } = req.session;
   const { _id } = req.body;
 
   try {
     const result = await characterService.removeCharacter({ charId: _id, userId: userId });
-    
+
     return res.status(200).send({ result });
   } catch (err) {
     return res.status(500).send({ error: err.message });

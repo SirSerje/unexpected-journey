@@ -3,6 +3,11 @@ import User from '../models/user';
 
 
 const characterService = {
+  async updateCharacter(charId, params) {
+    const {name} = params;
+
+    return Character.findOneAndUpdate({ _id: charId }, { name: name });
+  },
   async removeCharacter(params) {
     const { charId, userId } = params;
 
@@ -40,7 +45,7 @@ const characterService = {
   async getUserCharacters(userId) {
     const currentUser = await User.findById(userId).populate('characters');
 
-    return currentUser.characters.map(({ name, stats, owner }) => ({ name, stats, owner }));
+    return currentUser.characters.map(({ _id, name, stats }) => ({ _id, name, stats }));
   },
 };
 export default characterService;
