@@ -7,13 +7,10 @@ import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import winston from 'winston';
 import User from './models/user';
-import { ProfileController } from './controllers/profile';
 import { CharacterController } from './controllers/character';
-import { LogoutController } from './controllers/logout';
-import { SignupController } from './controllers/signup';
-import { LoginController } from './controllers/login';
 import { JourneyController } from './controllers/journey';
-import { isAdmin, isUser } from './middlewares/roles';
+// import { isAdmin, isUser } from './middlewares/roles';
+import userController from './controllers/user';
 import { userSignupValidator, userSignInValidator } from './middlewares/validators';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -88,10 +85,7 @@ const roleLoggerMiddleWare = async (req, res, next) => {
 //static content
 app.use(express.static('src/view/public'));
 
-app.post('/login', [roleLoggerMiddleWare, userSignInValidator], LoginController);
-app.post('/signup', [roleLoggerMiddleWare, userSignupValidator], SignupController);
-app.get('/logout', [roleLoggerMiddleWare], LogoutController);
-app.get('/profile', [roleLoggerMiddleWare], ProfileController);
+app.use('/', [roleLoggerMiddleWare, userSignInValidator], userController);
 app.use('/character', [roleLoggerMiddleWare ], CharacterController);
 app.use('/journey', [roleLoggerMiddleWare ], JourneyController);
 
