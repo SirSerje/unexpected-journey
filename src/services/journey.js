@@ -1,42 +1,30 @@
-import Character from '../models/character';
 import Journey from '../models/journey';
 import User from '../models/user';
 
 
 const journeyService = {
-  async updateJourney(journeyId, params) {
-    const {description} = params;
-
-    return Journey.update({ _id: journeyId }, { description: description });
+  async update(_id, params) {
+    return Journey.update({ _id }, { ...params });
   },
-  async removeJourney(params) {
-    const { journeyId, userId } = params;
-    await Journey.deleteOne({ _id: journeyId });
+  async remove(_id, entityId) {
+    await Journey.deleteOne({ _id });
 
-    return await User.update({ _id: userId }, { $pullAll: { journeys: [journeyId] } }, { new: true });
+    return await User.updateOne({ _id }, { $pullAll: { journeys: [entityId] } }, { new: true });
   },
-  async createAndAssign(params) {
-    const { userId, description } = params;
-
-    const currentUser = await User.findById(userId);
-
-    const newJourney = await Journey.create({
-      description,
-      owner: currentUser._id,
-    });
-
+  async create(userId, params) {
+    const current = await User.findById(userId);
+    const newEntity = await Journey.create({ ...params, owner: current._id });
     await User.findOneAndUpdate(
-      { _id: currentUser._id },
-      { $push: { journeys: newJourney._id } },
+      { _id: current._id },
+      { $push: { journeys: newEntity._id } },
       { new: true });
 
-    return newJourney._id;
-
+    return newEntity._id;
   },
-  async getUserJourney(userId) {
-    const currentUser = await User.findById(userId).populate('journeys');
+  async get(_id, populate = 'journeys') {
+    const currentUser = await User.findById(_id).populate(populate);
 
-    return currentUser.journeys;
+    return currentUser[populate];
   },
 };
 export default journeyService;

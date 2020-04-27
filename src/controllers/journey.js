@@ -1,65 +1,49 @@
 import { isAdmin, isUser } from '../middlewares/roles';
-import journeyService from '../services/journey';
+import service from '../services/journey';
 
 
 const express = require('express');
 const router = express.Router();
 
-//create Character and Assign it to User
 router.post('/', [isUser], async (req, res, next) => {
-  const { description } = req.body;
   const { userId } = req.session;
 
-  let newJourney;
+  let newEntity;
   try {
-    newJourney = await journeyService.createAndAssign({
-      userId,
-      description,
-    });
-
+    newEntity = await service.create(userId, { ...req.body });
   } catch (err) {
     return res.send({ error: err.message });
   }
 
-  return res.send(newJourney ? { journey: newJourney } : { error: 'character with same name are present' });
+  return res.send(newEntity ? { result: newEntity } : { error: 'character with same name are present' });
 });
 
-//get Chars for user
 router.get('/', [isUser], async (req, res, next) => {
-  const { userId } = req.session;
-  console.log('__', userId);
-
   try {
-    const characters = await journeyService.getUserJourney(userId);
+    const characters = await service.get(req.session.userId);
 
     return res.status(200).send(characters);
   } catch (err) {
     return res.status(500).send({ error: err.message });
   }
-
 });
 
-// update Journey
 router.put('/', async (req, res, next) => {
-  const { _id, description } = req.body;
+  const { _id, ...rest } = req.body;
   try {
-    const updatedJourney = await journeyService.updateJourney(_id, { description });
+    const updated = await service.update(_id, { ...rest });
 
-    return res.status(200).send({ success: Boolean(updatedJourney.ok) });
+    return res.status(200).send({ result: Boolean(updated.ok) });
   } catch (err) {
     return res.status(500).send({ error: err.message });
   }
 });
 
-// only ADMIN route
-// physically delete journey & remove from user
 router.delete('/', [isAdmin], async (req, res, next) => {
-  const { userId } = req.session;
-  const { _id } = req.body;
   try {
-    const result = await journeyService.removeJourney({ journeyId: _id, userId: userId });
+    const result = await service.remove(req.session.userId, req.body._id);
 
-    return res.status(200).send({result: result.ok});
+    return res.status(200).send({ result: result.ok });
   } catch (err) {
     return res.status(500).send({ error: err.message });
   }

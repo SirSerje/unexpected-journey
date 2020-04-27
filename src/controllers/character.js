@@ -1,4 +1,4 @@
-import characterService from '../services/character';
+import service from '../services/character';
 import { isAdmin, isUser } from '../middlewares/roles';
 
 
@@ -12,7 +12,7 @@ router.post('/', [isUser], async (req, res, next) => {
 
   let newCharacter;
   try {
-    newCharacter = await characterService.createAndAssign({
+    newCharacter = await service.create({
       userId,
       name,
       stats,
@@ -29,7 +29,7 @@ router.post('/', [isUser], async (req, res, next) => {
 router.get('/', [isUser], async (req, res, next) => {
   const { userId } = req.session;
   try {
-    const characters = await characterService.getUserCharacters(userId);
+    const characters = await service.get(userId);
 
     return res.status(200).send(characters);
   } catch (err) {
@@ -42,7 +42,7 @@ router.get('/', [isUser], async (req, res, next) => {
 router.put('/', async (req, res, next) => {
   const { _id, name } = req.body;
   try {
-    const updatedCharacter = await characterService.updateCharacter(_id, { name });
+    const updatedCharacter = await service.update(_id, { name });
 
     return res.status(200).send({ success: Boolean(updatedCharacter.ok) });
   } catch (err) {
@@ -57,7 +57,7 @@ router.delete('/', [isAdmin], async (req, res, next) => {
   const { _id } = req.body;
 
   try {
-    const result = await characterService.removeCharacter({ charId: _id, userId: userId });
+    const result = await service.remove({ charId: _id, userId: userId });
 
     return res.status(200).send({ result });
   } catch (err) {

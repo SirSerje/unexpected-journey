@@ -4,12 +4,12 @@ import Journey from '../models/journey';
 
 
 const characterService = {
-  async updateCharacter(charId, params) {
+  async update(charId, params) {
     const {name} = params;
 
     return Character.update({ _id: charId }, { name: name });
   },
-  async removeCharacter(params) {
+  async remove(params) {
     const { charId, userId } = params;
 
     const deletionResult = await Journey.deleteOne({ _id: charId });
@@ -17,7 +17,7 @@ const characterService = {
 
     return deletionResult.deletedCount > 0;
   },
-  async createAndAssign(params) {
+  async create(params) {
     const { userId, name, stats } = params;
 
     const currentUser = await User.findById(userId);
@@ -43,7 +43,7 @@ const characterService = {
       return null;
     }
   },
-  async getUserCharacters(userId) {
+  async get(userId) {
     const currentUser = await User.findById(userId).populate('characters');
 
     return currentUser.characters;
