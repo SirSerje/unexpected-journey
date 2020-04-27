@@ -31,6 +31,13 @@ const UserSchema = new mongoose.Schema({
     required: false,
     unique: false,
   }],
+  journeys:
+    [{
+      type: Schema.Types.ObjectId,
+      ref: 'Journey',
+      required: false,
+      unique: false,
+    }],
 });
 
 //authenticate input against database

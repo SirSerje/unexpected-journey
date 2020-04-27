@@ -1,17 +1,18 @@
 import Character from '../models/character';
 import User from '../models/user';
+import Journey from '../models/journey';
 
 
 const characterService = {
   async updateCharacter(charId, params) {
     const {name} = params;
 
-    return Character.findOneAndUpdate({ _id: charId }, { name: name });
+    return Character.update({ _id: charId }, { name: name });
   },
   async removeCharacter(params) {
     const { charId, userId } = params;
 
-    const deletionResult = await Character.deleteOne({ _id: charId });
+    const deletionResult = await Journey.deleteOne({ _id: charId });
     await User.findOneAndUpdate({ _id: userId }, { $pullAll: { characters: [charId] } }, { new: true });
 
     return deletionResult.deletedCount > 0;
@@ -45,7 +46,7 @@ const characterService = {
   async getUserCharacters(userId) {
     const currentUser = await User.findById(userId).populate('characters');
 
-    return currentUser.characters.map(({ _id, name, stats }) => ({ _id, name, stats }));
+    return currentUser.characters;
   },
 };
 export default characterService;

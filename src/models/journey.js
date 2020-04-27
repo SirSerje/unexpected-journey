@@ -1,12 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const CharacterSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    unique: true,
-    required: true,
-  },
+const JourneySchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
@@ -17,5 +12,5 @@ const CharacterSchema = new mongoose.Schema({
   }
 });
 
-const Character = mongoose.model('Character', CharacterSchema);
-export default Character;
+const Journey = mongoose.model('Journey', JourneySchema);
+export default Journey;

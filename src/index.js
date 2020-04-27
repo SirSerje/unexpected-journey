@@ -12,6 +12,7 @@ import { CharacterController } from './controllers/character';
 import { LogoutController } from './controllers/logout';
 import { SignupController } from './controllers/signup';
 import { LoginController } from './controllers/login';
+import { JourneyController } from './controllers/journey';
 import { isAdmin, isUser } from './middlewares/roles';
 import { userSignupValidator, userSignInValidator } from './middlewares/validators';
 import swaggerUi from 'swagger-ui-express';
@@ -92,5 +93,6 @@ app.post('/signup', [roleLoggerMiddleWare, userSignupValidator], SignupControlle
 app.get('/logout', [roleLoggerMiddleWare], LogoutController);
 app.get('/profile', [roleLoggerMiddleWare], ProfileController);
 app.use('/character', [roleLoggerMiddleWare ], CharacterController);
+app.use('/journey', [roleLoggerMiddleWare ], JourneyController);
 
 app.listen(process.env.NODE_PORT, () => console.log(`tracker running on port: ${process.env.NODE_PORT}`));

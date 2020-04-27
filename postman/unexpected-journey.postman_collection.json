@@ -121,13 +121,24 @@
 					"response": []
 				},
 				{
-					"name": "create char",
+					"name": "create char by user",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\":\"john doe\",\n\t\"stats\":\"stats\"\n}",
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "john bar",
+									"type": "text"
+								},
+								{
+									"key": "stats",
+									"value": "any stats",
+									"type": "text"
+								}
+							],
 							"options": {
 								"raw": {
 									"language": "json"
@@ -190,6 +201,159 @@
 							"port": "4000",
 							"path": [
 								"character"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "journey",
+			"item": [
+				{
+					"name": "update J",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "description",
+									"value": "new description",
+									"description": "stub data",
+									"type": "text"
+								},
+								{
+									"key": "_id",
+									"value": "5ea6dbc0a5e3d53946cc9bea",
+									"description": "journey id in database",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/journey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"journey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create J",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "description",
+									"value": "some description",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/journey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"journey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all J by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "defaultname",
+									"type": "text"
+								},
+								{
+									"key": "stats",
+									"value": "some_stats",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/journey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"journey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(admin) physically delete J",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "_id",
+									"value": "5ea7006d34d5fa3c5e40e28d",
+									"description": "id, which char will be deleted",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/journey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"journey"
 							]
 						}
 					},
