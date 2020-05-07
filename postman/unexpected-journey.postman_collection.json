@@ -18,7 +18,7 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "admin@gmail.com",
+									"value": "admin@admin.com",
 									"type": "text"
 								},
 								{
@@ -41,6 +41,102 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "[X] signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "pass",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "repass",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:4000/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:4000/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -58,7 +154,7 @@
 							"urlencoded": [
 								{
 									"key": "_id",
-									"value": "5e9d6c953f67762b52ba0e25",
+									"value": "5eb3fdab0e5a2ff76326c0af",
 									"description": "id, which char will be deleted",
 									"type": "text"
 								}
@@ -169,19 +265,19 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "new boys",
+									"value": "new boys123",
 									"description": "name",
 									"type": "text"
 								},
 								{
 									"key": "stats",
-									"value": "new stats",
+									"value": "new stats123",
 									"description": "any character additional options",
 									"type": "text"
 								},
 								{
 									"key": "_id",
-									"value": "5ea6a4e63c26c826cf609613",
+									"value": "5eb3fdab0e5a2ff76326c0af",
 									"description": "character id in database",
 									"type": "text"
 								}
@@ -222,13 +318,13 @@
 							"urlencoded": [
 								{
 									"key": "description",
-									"value": "new description",
+									"value": "new description2",
 									"description": "stub data",
 									"type": "text"
 								},
 								{
 									"key": "_id",
-									"value": "5ea6dbc0a5e3d53946cc9bea",
+									"value": "5eb3fd8e0e5a2ff76326c0ae",
 									"description": "journey id in database",
 									"type": "text"
 								}
@@ -334,7 +430,7 @@
 							"urlencoded": [
 								{
 									"key": "_id",
-									"value": "5ea7006d34d5fa3c5e40e28d",
+									"value": "5eb3ff5bf602abf78ab03eb5",
 									"description": "id, which char will be deleted",
 									"type": "text"
 								}

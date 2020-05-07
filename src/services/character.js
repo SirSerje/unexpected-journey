@@ -1,28 +1,22 @@
 import Character from '../models/character';
 import User from '../models/user';
-import Journey from '../models/journey';
 
 
 const characterService = {
-  async update(charId, params) {
-    const {name} = params;
-
-    return Character.update({ _id: charId }, { name: name });
+  async update(_id, params) {
+    return Character.update({ _id }, { ...params });
   },
-  async remove(params) {
-    const { charId, userId } = params;
+  async remove(userId, entityId, populate = 'characters') {
+    await Character.deleteOne({ _id: entityId });
 
-    const deletionResult = await Journey.deleteOne({ _id: charId });
-    await User.findOneAndUpdate({ _id: userId }, { $pullAll: { characters: [charId] } }, { new: true });
-
-    return deletionResult.deletedCount > 0;
+    return await User.updateOne({ _id: userId }, { $pullAll: { [populate]: [entityId] } }, { new: true });
   },
-  async create(params) {
-    const { userId, name, stats } = params;
+  async create(userId, params, populate = 'characters') {
+    const { name, stats } = params;
 
     const currentUser = await User.findById(userId);
-    const { characters } = await User.findById(userId).populate('characters');
-    const isSame = characters.find(i => i.name === name);
+    const entity = await User.findById(userId).populate(populate);
+    const isSame = entity[populate].find(i => i.name === name);
 
     if (!isSame) {
       const newChar = await Character.create({
@@ -43,10 +37,11 @@ const characterService = {
       return null;
     }
   },
-  async get(userId) {
-    const currentUser = await User.findById(userId).populate('characters');
+  async get(_id, populate = 'characters') {
+    const currentUser = await User.findById(_id).populate(populate);
 
-    return currentUser.characters;
+    return currentUser[populate];
   },
 };
+
 export default characterService;

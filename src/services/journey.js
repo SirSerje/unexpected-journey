@@ -7,7 +7,7 @@ const journeyService = {
     return Journey.update({ _id }, { ...params });
   },
   async remove(_id, entityId) {
-    await Journey.deleteOne({ _id });
+    await Journey.findByIdAndDelete(entityId);
 
     return await User.updateOne({ _id }, { $pullAll: { journeys: [entityId] } }, { new: true });
   },
@@ -27,4 +27,5 @@ const journeyService = {
     return currentUser[populate];
   },
 };
+
 export default journeyService;

@@ -7,44 +7,38 @@ const router = express.Router();
 
 //create Character and Assign it to User
 router.post('/', [isUser], async (req, res, next) => {
-  const { name, stats } = req.body;
   const { userId } = req.session;
 
-  let newCharacter;
+  let newEntity;
   try {
-    newCharacter = await service.create({
-      userId,
-      name,
-      stats,
-    });
-
+    newEntity = await service.create(userId, { ...req.body });
   } catch (err) {
+    console.log(err);
+
     return res.send({ error: err.message });
   }
 
-  return res.send(newCharacter ? { character: newCharacter } : { error: 'character with same name are present' });
+  return res.send(newEntity ? { result: newEntity } : { error: 'character with same name are present' });
 });
 
 //get Chars for user
 router.get('/', [isUser], async (req, res, next) => {
-  const { userId } = req.session;
   try {
-    const characters = await service.get(userId);
+    const items = await service.get(req.session.userId);
 
-    return res.status(200).send(characters);
+    return res.status(200).send(items);
   } catch (err) {
     return res.status(500).send({ error: err.message });
   }
-
 });
 
 // update char
 router.put('/', async (req, res, next) => {
-  const { _id, name } = req.body;
+  const { _id, ...rest } = req.body;
   try {
-    const updatedCharacter = await service.update(_id, { name });
+    const updated = await service.update(_id, { ...rest });
 
-    return res.status(200).send({ success: Boolean(updatedCharacter.ok) });
+    return res.status(200).send({ result: Boolean(updated.ok) });
   } catch (err) {
     return res.status(500).send({ error: err.message });
   }
@@ -53,11 +47,8 @@ router.put('/', async (req, res, next) => {
 // only ADMIN route
 // physically delete character & remove from user
 router.delete('/', [isAdmin], async (req, res, next) => {
-  const { userId } = req.session;
-  const { _id } = req.body;
-
   try {
-    const result = await service.remove({ charId: _id, userId: userId });
+    const result = await service.remove(req.session.userId, req.body._id);
 
     return res.status(200).send({ result });
   } catch (err) {

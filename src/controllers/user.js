@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+import { userSignupValidator, userSignInValidator } from '../middlewares/validators';
 import User from '../models/user';
+const { validationResult } = require('express-validator');
 
 
 router.get('/profile', function (req, res, next) {
@@ -42,7 +44,12 @@ router.get('/logout', (req,res,next) => {
   }
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', [userSignInValidator], (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return res.status(422).json({ errors: validationErrors.array() });
+  }
+
   const {username, pass} = req.body;
   User.authenticate(username, pass, function (error, user) {
     if (error || !user) {
@@ -58,7 +65,12 @@ router.post('/login', (req, res, next) => {
   });
 });
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', [userSignupValidator],(req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return res.status(422).json({ errors: validationErrors.array() });
+  }
+
   const {username, email, pass, repass, role} = req.body;
   if (!role) {
     return res.status(400).send("role is not specified");

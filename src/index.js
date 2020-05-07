@@ -9,9 +9,7 @@ import winston from 'winston';
 import User from './models/user';
 import { CharacterController } from './controllers/character';
 import { JourneyController } from './controllers/journey';
-// import { isAdmin, isUser } from './middlewares/roles';
 import userController from './controllers/user';
-import { userSignupValidator, userSignInValidator } from './middlewares/validators';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -66,6 +64,7 @@ db.once('open', function () {
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: true,
+  cookie: { maxAge: 3600000 },
   saveUninitialized: false,
   store: new MongoStore({
     mongooseConnection: db,
@@ -85,7 +84,7 @@ const roleLoggerMiddleWare = async (req, res, next) => {
 //static content
 app.use(express.static('src/view/public'));
 
-app.use('/', [roleLoggerMiddleWare, userSignInValidator], userController);
+app.use('/', userController);
 app.use('/character', [roleLoggerMiddleWare ], CharacterController);
 app.use('/journey', [roleLoggerMiddleWare ], JourneyController);
 
